@@ -32,4 +32,4 @@ export const academicSemesterTitleCodeMapper: { [key: string]: string } = {
   Fall: '03',
 };
 
-export type IAcademicSemesterFilter = { searchTerm: string };
+export type IAcademicSemesterFilter = { searchTerm?: string };
