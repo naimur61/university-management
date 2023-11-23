@@ -109,9 +109,21 @@ const getSingleSemesterFromBD = async (
   return result;
 };
 
+const updateSemesterToDB = async (
+  id: string,
+  payload: Partial<IAcademicSemester>,
+): Promise<IAcademicSemester | null> => {
+  const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const AcademicSemesterService = {
   createSemesterToDB,
   getSemestersFromDB,
   getSingleSemesterFromBD,
+  updateSemesterToDB,
 };
 //

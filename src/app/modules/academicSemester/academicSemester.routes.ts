@@ -5,6 +5,8 @@ import { AcademicSemesterController } from './AcademicSemesterController';
 
 const router = express.Router();
 
+router.patch('/:id', AcademicSemesterController.updateSemester);
+
 router.get('/', AcademicSemesterController.getAllSemesters);
 router.get('/:id', AcademicSemesterController.getSingleSemester);
 
