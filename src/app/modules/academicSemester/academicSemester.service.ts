@@ -128,10 +128,19 @@ const updateSemesterToDB = async (
   return result;
 };
 
+const deleteSemesterFromDB = async (
+  id: string,
+): Promise<IAcademicSemester | null> => {
+  const result = await AcademicSemester.findByIdAndDelete(id);
+
+  return result;
+};
+
 export const AcademicSemesterService = {
   createSemesterToDB,
   getSemestersFromDB,
   getSingleSemesterFromBD,
   updateSemesterToDB,
+  deleteSemesterFromDB,
 };
 //
