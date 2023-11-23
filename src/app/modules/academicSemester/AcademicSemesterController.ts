@@ -23,6 +23,20 @@ const createSemester: RequestHandler = catchAsync(async (req, res, next) => {
   next();
 });
 
+const getSingleSemester = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
+  const result = await AcademicSemesterService.getSingleSemesterFromBD(id);
+
+  sendResponse(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'Semester retrieve successfully!',
+    data: result,
+  });
+
+  next();
+});
+
 const getAllSemesters: RequestHandler = catchAsync(async (req, res, next) => {
   const filters = pick(req.query, academicSemesterFilterableFields);
   const paginationOptions = pick(req.query, paginationKey);
@@ -46,4 +60,5 @@ const getAllSemesters: RequestHandler = catchAsync(async (req, res, next) => {
 export const AcademicSemesterController = {
   createSemester,
   getAllSemesters,
+  getSingleSemester,
 };
