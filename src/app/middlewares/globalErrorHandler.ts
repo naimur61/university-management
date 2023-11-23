@@ -10,7 +10,7 @@ import { ZodError } from 'zod';
 import handleZodError from '../../errors/handleZodError';
 import handleCastError from '../../errors/handleCastError';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+const globalErrorHandler: ErrorRequestHandler = (error, req, res) => {
   config.env === 'development'
     ? errorLogger.error('Global Error Handler~', error.message)
     : errorLogger.error('Global Error Handler~');
@@ -67,7 +67,6 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     // eslint-disable-next-line no-undefined
     stack: config.env !== 'production' ? error?.stack : undefined,
   });
-  next();
 };
 
 export default globalErrorHandler;

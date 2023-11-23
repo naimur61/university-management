@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { AnyObject } from 'mongoose';
+import { AnyZodObject, ZodEffects } from 'zod';
 
 const validateRequest =
-  (schema: AnyObject) =>
+  (schema: AnyObject | ZodEffects<AnyZodObject>) =>
   async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       await schema.parseAsync({
