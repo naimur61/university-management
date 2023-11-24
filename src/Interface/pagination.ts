@@ -1,4 +1,4 @@
-export type ISemesterPagination = {
+export type IPaginationOptions = {
   page?: number;
   limit?: number;
   sortBy?: string;

@@ -6,7 +6,7 @@ import {
   academicSemesterTitleCodeMapper,
 } from './academicSemester.interface';
 import { AcademicSemester } from './academicSemester.model';
-import { ISemesterPagination } from '../../../Interface/semesterPagination';
+import { IPaginationOptions } from '../../../Interface/pagination';
 import { IGenericResponse } from '../../../Interface/common';
 import { HelperPagination } from '../../../helpers/paginationHelpers';
 import { SortOrder } from 'mongoose';
@@ -26,7 +26,7 @@ const createSemesterToDB = async (payload: IAcademicSemester) => {
 
 const getSemestersFromDB = async (
   filters: IAcademicSemesterFilter,
-  paginationOptions: ISemesterPagination,
+  paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<IAcademicSemester[]>> => {
   const { page, limit, skip, sortBy, sortOrder } =
     HelperPagination.calculatePagination(paginationOptions);
