@@ -10,3 +10,4 @@ logs/
 # Ignore build directories
 target/
 bin/
+.vercel
