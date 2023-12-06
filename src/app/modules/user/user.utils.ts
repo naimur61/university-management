@@ -1,15 +1,41 @@
 import { User } from './user.model';
 
-const findLastUserId = async () => {
-  const leastUser = await User.findOne({}, { id: 1, _id: 0 })
-    .sort({ createdAt: -1 })
+const findLastUserID = async () => {
+  const lastUser = await User.findOne({}, { id: 1, _id: 0 })
+    .sort({
+      createdAt: -1,
+    })
     .lean();
-  const newUser = leastUser ? parseInt(leastUser.id) + 1 : 1;
+
+  const newUser = lastUser ? parseInt(lastUser.id.slice(-3)) + 1 : 1;
+
   return newUser;
 };
 
-export const generateUserId = async () => {
-  const newId = await findLastUserId();
-  const incrementId = await newId.toString().padStart(5, '0');
-  return incrementId;
+const generateUserId = async () => {
+  const newUser = await findLastUserID();
+
+  const currentYear = (new Date().getFullYear() % 100).toString();
+
+  const increment = await newUser.toString().padStart(3, '0');
+
+  return currentYear + increment;
 };
+
+export default generateUserId;
+
+// import { User } from './user.model';
+
+// const findLastUserId = async () => {
+//   const leastUser = await User.findOne({}, { id: 1, _id: 0 })
+//     .sort({ createdAt: -1 })
+//     .lean();
+//   const newUser = leastUser ? parseInt(leastUser.id) + 1 : 1;
+//   return newUser;
+// };
+
+// export const generateUserId = async () => {
+//   const newId = await findLastUserId();
+//   const incrementId = await newId.toString().padStart(5, '0');
+//   return incrementId;
+// };

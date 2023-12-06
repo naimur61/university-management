@@ -53,31 +53,6 @@ const getSemestersFromDB = async (
     });
   }
 
-  // const andCondition = [
-  //   {
-  //     $or: [
-  //       {
-  //         title: {
-  //           $regex: searchTerm,
-  //           $options: 'i',
-  //         },
-  //       },
-  //       {
-  //         code: {
-  //           $regex: searchTerm,
-  //           $options: 'i',
-  //         },
-  //       },
-  //       // {
-  //       //   year: {
-  //       //     $regex: searchTerm,
-  //       //     $options: 'i',
-  //       //   },
-  //       // },
-  //     ],
-  //   },
-  // ];
-
   const sortCondition: { [key: string]: SortOrder } = {};
   if (sortBy && sortOrder) {
     sortCondition[sortBy] = sortOrder;

@@ -5,7 +5,8 @@ import catchAsync from '../../../shared/catchAsync';
 import { RequestHandler } from 'express';
 
 const createUser: RequestHandler = catchAsync(async (req, res) => {
-  const { user } = req.body;
+  const { ...user } = req.body;
+
   const result = await UserService.createUserToDB(user);
 
   sendResponse(res, {

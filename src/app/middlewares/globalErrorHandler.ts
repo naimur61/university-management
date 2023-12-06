@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-expressions */
-/* eslint-disable no-console */
+
 import { ErrorRequestHandler } from 'express';
 import config from '../../config';
 import { IGenericErrorMessages } from '../../Interface/interface.error';
@@ -10,7 +10,7 @@ import { ZodError } from 'zod';
 import handleZodError from '../../errors/handleZodError';
 import handleCastError from '../../errors/handleCastError';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res) => {
+const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   config.env === 'development'
     ? errorLogger.error('Global Error Handler~', error.message)
     : errorLogger.error('Global Error Handler~');
@@ -25,17 +25,17 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res) => {
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessage = simplifiedError.errorMessage;
-  } else if (error instanceof ZodError) {
-    const simplifiedError = handleZodError(error);
-
-    statusCode = simplifiedError.statusCode;
-    message = simplifiedError.message;
-    errorMessage = simplifiedError.errorMessage;
   } else if (error?.name === 'CastError') {
     const simplifiedError = handleCastError(error);
 
     message = simplifiedError.message;
     statusCode = simplifiedError.statusCode;
+    errorMessage = simplifiedError.errorMessage;
+  } else if (error instanceof ZodError) {
+    const simplifiedError = handleZodError(error);
+
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
     errorMessage = simplifiedError.errorMessage;
   } else if (error instanceof ApiError) {
     statusCode = error?.statusCode;
@@ -67,6 +67,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res) => {
     // eslint-disable-next-line no-undefined
     stack: config.env !== 'production' ? error?.stack : undefined,
   });
+  next();
 };
 
 export default globalErrorHandler;
