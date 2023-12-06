@@ -5,12 +5,14 @@ import { AcademicDepartmentController } from './academicDepartment.controller';
 
 const router = express.Router();
 
-router.use(
+router.post(
   '/create-department',
   validateRequest(
     AcademicDepartmentValidation.createAcademicDepartmentZodSchema,
   ),
   AcademicDepartmentController.createDepartment,
 );
+
+router.get('/', AcademicDepartmentController.getDepartments);
 
 export const DepartmentRoutes = router;
