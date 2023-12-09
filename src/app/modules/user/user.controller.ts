@@ -3,6 +3,8 @@ import httpStatus from 'http-status';
 import sendResponse from '../../../shared/sendResponse';
 import catchAsync from '../../../shared/catchAsync';
 import { RequestHandler } from 'express';
+import paginationKey from '../../../constants/constants';
+import pick from '../../../shared/pick';
 
 const createUser: RequestHandler = catchAsync(async (req, res) => {
   const { ...user } = req.body;
@@ -17,6 +19,11 @@ const createUser: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const getUser: RequestHandler = catchAsync(async (req, res) => {
+  const paginationOptions = pick(req.query, paginationKey);
+});
+
 export const UserController = {
   createUser,
+  getUser,
 };
