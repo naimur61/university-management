@@ -13,9 +13,8 @@ router.post(
 
 // router.patch('/:id', UserController.deleteUser);
 
+router.delete('/:id', UserController.deleteUser);
 router.get('/', UserController.getUser);
-
 router.get('/:id', UserController.getSingleUser);
-// router.delete('/:id', UserController.deleteUser);
 
 export const UserRoutes = router;

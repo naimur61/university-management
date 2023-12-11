@@ -48,8 +48,22 @@ const getSingleUser: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const deleteUser: RequestHandler = catchAsync(async (req, res) => {
+  const id = req.params.id;
+
+  const result = await UserService.deleteUserFromDB(id);
+
+  sendResponse<IUser>(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'User Deleted successful!',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUser,
   getSingleUser,
+  deleteUser,
 };
