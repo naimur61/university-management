@@ -81,14 +81,16 @@ const getSingleUserFromDB = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
-// const deleteUserToDB = async (id: string): Promise<IUser | null> => {
-//   const result = await User.findByIdAndDelete(id);
-
-//   return result;
-// };
-
 const deleteUserFromDB = async (id: string): Promise<IUser | null> => {
   const result = await User.findByIdAndDelete(id);
+
+  return result;
+};
+
+const updateUserToDB = async (id: string, payload: Partial<IUser>) => {
+  const result = await User.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
 
   return result;
 };
@@ -98,4 +100,5 @@ export const UserService = {
   getUserFromDB,
   getSingleUserFromDB,
   deleteUserFromDB,
+  updateUserToDB,
 };
