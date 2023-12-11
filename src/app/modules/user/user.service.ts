@@ -46,6 +46,14 @@ const getUserFromDB = async (
     });
   }
 
+  if (Object.keys(filtersData)) {
+    andCondition.push({
+      $and: Object.entries(filtersData).map(([key, value]) => ({
+        [key]: value,
+      })),
+    });
+  }
+
   const result = await User.find({ $and: andCondition })
     .sort(sortCondition)
     .skip(skip)
