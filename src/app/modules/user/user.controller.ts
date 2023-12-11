@@ -6,6 +6,7 @@ import { RequestHandler } from 'express';
 import paginationKey from '../../../constants/constants';
 import pick from '../../../shared/pick';
 import { IUser } from './user.interface';
+import { userFilterableFields } from './user.constants';
 
 const createUser: RequestHandler = catchAsync(async (req, res) => {
   const { ...user } = req.body;
@@ -21,7 +22,7 @@ const createUser: RequestHandler = catchAsync(async (req, res) => {
 });
 
 const getUser: RequestHandler = catchAsync(async (req, res) => {
-  const filters = pick(req.query, ['role']);
+  const filters = pick(req.query, userFilterableFields);
   const paginationOptions = pick(req.query, paginationKey);
 
   const result = await UserService.getUserFromDB(filters, paginationOptions);
@@ -35,7 +36,20 @@ const getUser: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUser: RequestHandler = catchAsync(async (req, res) => {
+  const userID = req.params.id;
+  const result = await UserService.getSingleUserFromDB(userID);
+
+  sendResponse<IUser>(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'User retried successful.',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUser,
+  getSingleUser,
 };

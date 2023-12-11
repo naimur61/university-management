@@ -31,22 +31,20 @@ const getUserFromDB = async (
     HelperPagination.calculatePagination(paginationOptions);
   const { searchTerm, ...filtersData } = filters;
 
-  const sortCondition: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortCondition[sortBy] = sortOrder;
-  }
-
   const andCondition = [];
 
   if (searchTerm) {
     andCondition.push({
       $or: userSearchableFields.map(field => ({
-        [field]: { $regex: searchTerm, options: 'i' },
+        [field]: {
+          $regex: searchTerm,
+          $options: 'i',
+        },
       })),
     });
   }
 
-  if (Object.keys(filtersData)) {
+  if (Object.keys(filtersData).length) {
     andCondition.push({
       $and: Object.entries(filtersData).map(([key, value]) => ({
         [key]: value,
@@ -54,7 +52,14 @@ const getUserFromDB = async (
     });
   }
 
-  const result = await User.find({ $and: andCondition })
+  const sortCondition: { [key: string]: SortOrder } = {};
+  if (sortBy && sortOrder) {
+    sortCondition[sortBy] = sortOrder;
+  }
+
+  const whereCondition = andCondition.length > 0 ? { $and: andCondition } : {};
+
+  const result = await User.find(whereCondition)
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
@@ -70,7 +75,13 @@ const getUserFromDB = async (
   };
 };
 
+const getSingleUserFromDB = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+
+  return result;
+};
 export const UserService = {
   createUserToDB,
   getUserFromDB,
+  getSingleUserFromDB,
 };
