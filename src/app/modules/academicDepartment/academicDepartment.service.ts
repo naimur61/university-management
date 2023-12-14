@@ -23,6 +23,24 @@ const createDepartmentToDB = async (payload: IAcademicDepartment) => {
   }
   return result;
 };
+const updateDepartmentToDB = async (
+  id: string,
+  payload: IAcademicDepartment,
+) => {
+  const result = await AcademicDepartment.findOneAndUpdate(
+    { _id: id },
+    payload,
+    { new: true },
+  ).populate('academicFaculty');
+
+  if (!result) {
+    throw new ApiError(
+      httpStatus.EXPECTATION_FAILED,
+      'Failed to create Department!',
+    );
+  }
+  return result;
+};
 
 const getDepartmentsFromDB = async (
   filters: IAcademicDepartmentFilterRequest,
@@ -80,4 +98,5 @@ const getDepartmentsFromDB = async (
 export const AcademicDepartmentService = {
   createDepartmentToDB,
   getDepartmentsFromDB,
+  updateDepartmentToDB,
 };

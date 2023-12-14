@@ -23,6 +23,22 @@ const createDepartment: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const updateDepartment: RequestHandler = catchAsync(async (req, res) => {
+  const { ...academicDepartment } = req.body;
+  const id = req.query;
+  const result = await AcademicDepartmentService.updateDepartmentToDB(
+    id,
+    academicDepartment,
+  );
+
+  sendResponse(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'Department Create Successful!',
+    data: result,
+  });
+});
+
 const getDepartments: RequestHandler = catchAsync(async (req, res) => {
   const filters = pick(req.query, academicDepartmentFilterableFields);
   const paginationOptions = pick(req.query, academicDepartmentSearchableFields);
@@ -44,4 +60,5 @@ const getDepartments: RequestHandler = catchAsync(async (req, res) => {
 export const AcademicDepartmentController = {
   createDepartment,
   getDepartments,
+  updateDepartment: updateDepartment,
 };

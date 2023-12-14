@@ -17,7 +17,7 @@ router.patch(
   validateRequest(
     AcademicDepartmentValidation.updateAcademicDepartmentZodSchema,
   ),
-  AcademicDepartmentController.updadteDepartment,
+  AcademicDepartmentController.updateDepartment,
 );
 
 router.get('/', AcademicDepartmentController.getDepartments);
