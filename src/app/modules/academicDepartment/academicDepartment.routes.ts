@@ -12,6 +12,13 @@ router.post(
   ),
   AcademicDepartmentController.createDepartment,
 );
+router.patch(
+  '/create-department',
+  validateRequest(
+    AcademicDepartmentValidation.updateAcademicDepartmentZodSchema,
+  ),
+  AcademicDepartmentController.updadteDepartment,
+);
 
 router.get('/', AcademicDepartmentController.getDepartments);
 
