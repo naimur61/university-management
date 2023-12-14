@@ -7,14 +7,15 @@ import { HelperPagination } from '../../../helpers/paginationHelpers';
 import { userSearchableFields } from './user.constants';
 import { IUser, IUserFilter } from './user.interface';
 import { User } from './user.model';
-import { generateStudentId } from './user.utils';
+import { generateFacultyId, generateStudentId } from './user.utils';
 
 const createUserToDB = async (user: IUser): Promise<IUser> => {
   const academicSemester = {
     code: '01',
     year: '2023',
   };
-  const id = await generateStudentId(academicSemester);
+  // const id = await generateStudentId(academicSemester);
+  const id = await generateFacultyId();
   user.id = id;
 
   if (!user.password) {
