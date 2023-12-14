@@ -25,8 +25,8 @@ const createDepartmentToDB = async (payload: IAcademicDepartment) => {
 };
 const updateDepartmentToDB = async (
   id: string,
-  payload: IAcademicDepartment,
-) => {
+  payload: Partial<IAcademicDepartment>,
+): Promise<IAcademicDepartment | null> => {
   const result = await AcademicDepartment.findOneAndUpdate(
     { _id: id },
     payload,
