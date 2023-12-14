@@ -1,8 +1,9 @@
 import { Model } from 'mongoose';
+export type IUserRole = 'student' | 'admin' | 'faculty';
 
 export type IUser = {
   id: string;
-  role: string;
+  role: IUserRole;
   password: string;
 };
 
