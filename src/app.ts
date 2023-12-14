@@ -4,6 +4,10 @@ import cors from 'cors';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './app/routes';
 import httpStatus from 'http-status';
+// import {
+//   generateFacultyId,
+//   generateStudentId,
+// } from './app/modules/user/user.utils';
 
 app.use(cors());
 
@@ -31,3 +35,16 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 export default app;
+
+// const academicSemester = {
+//   code: '02',
+//   year: '2023',
+// };
+
+// const testId = async () => {
+//   // const id = await generateStudentId(academicSemester);
+//   const id = await generateFacultyId();
+//   console.log(id);
+// };
+
+// console.log(testId());
