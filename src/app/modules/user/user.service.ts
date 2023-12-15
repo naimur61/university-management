@@ -1,4 +1,4 @@
-import { SortOrder } from 'mongoose';
+import mongoose, { SortOrder, startSession } from 'mongoose';
 import { IGenericResponse } from '../../../Interface/common';
 import { IPaginationOptions } from '../../../Interface/pagination';
 import config from '../../../config';
@@ -10,28 +10,52 @@ import { User } from './user.model';
 import { generateStudentId } from './user.utils';
 import { IStudent } from '../student/student.interface';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
+import { Student } from '../student/student.module';
+import httpStatus from 'http-status';
 
 const createStudentToDB = async (
   student: IStudent,
   user: IUser,
-): Promise<IUser> => {
-  const academicSemester = await AcademicSemester.findById(
-    student.academicSemester,
-  );
-
-  const id = await generateStudentId(academicSemester);
-  user.id = id;
-
+): Promise<IUser | null> => {
   if (!user.password) {
     user.password = config.default_student_pass as string;
   }
   user.role = 'student';
 
-  const createdUser = await User.create(user);
-  if (!createdUser) {
-    throw new ApiError(400, 'Failed to create user!');
+  const academicSemester = await AcademicSemester.findById(
+    student.academicSemester,
+  );
+
+  const session = startSession();
+
+  // eslint-disable-next-line no-useless-catch
+  try {
+    (await session).startTransaction();
+
+    const id = await generateStudentId(academicSemester);
+    user.id = id;
+    student.id = id;
+
+    const newStudent = await Student.create([student], { session });
+    if (!newStudent.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Student create failed!');
+    }
+
+    // set ref with student
+    user.student = newStudent[0]._id;
+
+    const newUser = await User.create([user], { session });
+    if (!newUser.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User create failed!');
+    }
+
+    (await session).commitTransaction();
+    (await session).endSession();
+  } catch (error) {
+    (await session).abortTransaction();
+    (await session).endSession();
+    throw error;
   }
-  return createdUser;
 };
 
 const getUserFromDB = async (
