@@ -7,20 +7,26 @@ import { HelperPagination } from '../../../helpers/paginationHelpers';
 import { userSearchableFields } from './user.constants';
 import { IUser, IUserFilter } from './user.interface';
 import { User } from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import { generateStudentId } from './user.utils';
+import { IStudent } from '../student/student.interface';
+import { AcademicSemester } from '../academicSemester/academicSemester.model';
 
-const createUserToDB = async (user: IUser): Promise<IUser> => {
-  const academicSemester = {
-    code: '01',
-    year: '2023',
-  };
-  // const id = await generateStudentId(academicSemester);
-  const id = await generateFacultyId();
+const createStudentToDB = async (
+  student: IStudent,
+  user: IUser,
+): Promise<IUser> => {
+  const academicSemester = await AcademicSemester.findById(
+    student.academicSemester,
+  );
+
+  const id = await generateStudentId(academicSemester);
   user.id = id;
 
   if (!user.password) {
     user.password = config.default_student_pass as string;
   }
+  user.role = 'student';
+
   const createdUser = await User.create(user);
   if (!createdUser) {
     throw new ApiError(400, 'Failed to create user!');
@@ -101,7 +107,7 @@ const updateUserToDB = async (id: string, payload: Partial<IUser>) => {
 };
 
 export const UserService = {
-  createUserToDB,
+  createStudentToDB,
   getUserFromDB,
   getSingleUserFromDB,
   deleteUserFromDB,

@@ -14,15 +14,16 @@ const findLastStudentID = async (): Promise<number> => {
 };
 
 export const generateStudentId = async (
-  academicSemester: IAcademicSemester,
+  academicSemester: IAcademicSemester | null,
 ): Promise<string> => {
   const newUser = await findLastStudentID();
 
   let incrementId = await newUser.toString().padStart(5, '0');
 
-  incrementId = `${academicSemester.year.substring(2, 4)}${
-    academicSemester.code
-  }${incrementId}`;
+  incrementId = `${academicSemester?.year.substring(
+    2,
+    4,
+  )}${academicSemester?.code}${incrementId}`;
 
   return incrementId;
 };

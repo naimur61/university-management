@@ -8,10 +8,10 @@ import pick from '../../../shared/pick';
 import { IUser } from './user.interface';
 import { userFilterableFields } from './user.constants';
 
-const createUser: RequestHandler = catchAsync(async (req, res) => {
-  const { ...user } = req.body;
+const createStudent: RequestHandler = catchAsync(async (req, res) => {
+  const { student, ...userData } = req.body;
 
-  const result = await UserService.createUserToDB(user);
+  const result = await UserService.createStudentToDB(student, userData);
 
   sendResponse(res, {
     statuscode: httpStatus.OK,
@@ -76,7 +76,7 @@ const updateUser: RequestHandler = catchAsync(async (req, res) => {
 });
 
 export const UserController = {
-  createUser,
+  createStudent,
   getUser,
   getSingleUser,
   deleteUser,
