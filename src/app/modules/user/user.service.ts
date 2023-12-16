@@ -1,4 +1,4 @@
-import mongoose, { SortOrder, startSession } from 'mongoose';
+import mongoose, { SortOrder } from 'mongoose';
 import { IGenericResponse } from '../../../Interface/common';
 import { IPaginationOptions } from '../../../Interface/pagination';
 import config from '../../../config';
@@ -26,11 +26,13 @@ const createStudentToDB = async (
     student.academicSemester,
   );
 
-  const session = startSession();
+  let newUserAllData = null;
+
+  const session = await mongoose.startSession();
 
   // eslint-disable-next-line no-useless-catch
   try {
-    (await session).startTransaction();
+    await session.startTransaction();
 
     const id = await generateStudentId(academicSemester);
     user.id = id;
@@ -49,13 +51,28 @@ const createStudentToDB = async (
       throw new ApiError(httpStatus.BAD_REQUEST, 'User create failed!');
     }
 
-    (await session).commitTransaction();
-    (await session).endSession();
+    newUserAllData = newUser[0];
+
+    await session.commitTransaction();
+    await session.endSession();
   } catch (error) {
-    (await session).abortTransaction();
-    (await session).endSession();
+    await session.abortTransaction();
+    await session.endSession();
     throw error;
   }
+
+  if (newUserAllData) {
+    newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
+      path: 'student',
+      populate: [
+        { path: 'academicSemester' },
+        { path: 'academicDepartment' },
+        { path: 'academicFaculty' },
+      ],
+    });
+  }
+
+  return newUserAllData;
 };
 
 const getUserFromDB = async (
