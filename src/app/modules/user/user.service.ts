@@ -10,7 +10,7 @@ import { User } from './user.model';
 import { generateStudentId } from './user.utils';
 import { IStudent } from '../student/student.interface';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
-import { Student } from '../student/student.module';
+import { Student } from '../student/student.model';
 import httpStatus from 'http-status';
 
 const createStudentToDB = async (
