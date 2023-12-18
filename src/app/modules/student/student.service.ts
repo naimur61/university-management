@@ -2,12 +2,12 @@ import { SortOrder } from 'mongoose';
 import { IGenericResponse } from '../../../Interface/common';
 import { IPaginationOptions } from '../../../Interface/pagination';
 import { HelperPagination } from '../../../helpers/paginationHelpers';
-import { IStudent, IStudentFilter } from './student.interface';
+import { IStudent, IStudentFilters } from './student.interface';
 import { studentSearchableFields } from './student.constants';
 import { Student } from './student.model';
 
 const getAllStudentFromDB = async (
-  filters: IStudentFilter,
+  filters: IStudentFilters,
   paginationOptions: IPaginationOptions,
 ): Promise<IGenericResponse<IStudent[]>> => {
   const { sortBy, sortOrder, limit, skip, page } =
@@ -15,7 +15,6 @@ const getAllStudentFromDB = async (
   const { searchTerm, ...filtersData } = filters;
 
   const andCondition = [];
-
   if (searchTerm) {
     andCondition.push({
       $or: studentSearchableFields.map(field => ({
@@ -46,7 +45,7 @@ const getAllStudentFromDB = async (
     .sort(sortCondition)
     .skip(skip)
     .limit(limit);
-  const total = await Student.countDocuments();
+  const total = await Student.countDocuments(whereCondition);
 
   return {
     meta: {

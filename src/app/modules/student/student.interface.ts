@@ -47,4 +47,13 @@ export type IStudent = {
 
 export type StudentModel = Model<IStudent, Record<string, unknown>>;
 
-export type IStudentFilter = { searchTerm?: string };
+export type IStudentFilters = {
+  searchTerm?: string;
+  id?: string;
+  email?: string;
+  contactNo?: string;
+  bloodGroup?: string;
+  academicFaculty?: string;
+  academicDepartment?: string;
+  academicSemester?: string;
+};

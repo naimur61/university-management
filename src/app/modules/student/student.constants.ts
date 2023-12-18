@@ -4,10 +4,12 @@ export const Gender = ['male', 'female', 'other'];
 
 export const studentSearchableFields = [
   'id',
-  'name',
   'email',
   'contactNo',
   'bloodGroup',
+  'name.firstName',
+  'name.middleName',
+  'name.lastName',
   'academicFaculty',
   'academicDepartment',
   'academicSemester',
@@ -15,7 +17,6 @@ export const studentSearchableFields = [
 export const studentFilterableFields = [
   'searchTerm',
   'id',
-  'name',
   'email',
   'contactNo',
   'bloodGroup',
