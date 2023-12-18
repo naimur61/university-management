@@ -5,6 +5,8 @@ import { HelperPagination } from '../../../helpers/paginationHelpers';
 import { IStudent, IStudentFilters } from './student.interface';
 import { studentSearchableFields } from './student.constants';
 import { Student } from './student.model';
+import { ApiError } from '../../../errors/ApiError';
+import httpStatus from 'http-status';
 
 const getAllStudentFromDB = async (
   filters: IStudentFilters,
@@ -70,6 +72,11 @@ const deleteStudentFromDB = async (id: string): Promise<IStudent | null> => {
 };
 
 const updateStudentToDB = async (id: string, payload: Partial<IStudent>) => {
+  const ifExits = await Student.findOne({ id });
+  if (!ifExits) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Student Not Found!');
+  }
+
   const result = await Student.findOneAndUpdate({ _id: id }, payload, {
     new: true,
   });

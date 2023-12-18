@@ -60,7 +60,7 @@ const updateStudent: RequestHandler = catchAsync(async (req, res) => {
   sendResponse<IStudent>(res, {
     statuscode: httpStatus.OK,
     success: true,
-    message: 'Student update successful.',
+    message: 'Student updated successful.',
     data: result,
   });
 });
