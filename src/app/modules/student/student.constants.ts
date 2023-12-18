@@ -10,9 +10,9 @@ export const studentSearchableFields = [
   'name.firstName',
   'name.middleName',
   'name.lastName',
-  'academicFaculty',
-  'academicDepartment',
-  'academicSemester',
+  // 'academicFaculty',
+  // 'academicDepartment',
+  // 'academicSemester',
 ];
 export const studentFilterableFields = [
   'searchTerm',
@@ -24,3 +24,21 @@ export const studentFilterableFields = [
   'academicDepartment',
   'academicSemester',
 ];
+// export const studentSearchableFields = [
+//   'id',
+//   'email',
+//   'contactNo',
+//   'bloodGroup',
+//   'name.firstName',
+//   'name.middleName',
+//   'name.lastName',
+//   'academicFaculty',
+// ];
+
+// export const studentFilterableFields = [
+//   'searchTerm',
+//   'id',
+//   'email',
+//   'contactNo',
+//   'bloodGroup',
+// ];
