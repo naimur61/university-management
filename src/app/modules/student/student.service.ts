@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SortOrder } from 'mongoose';
 import { IGenericResponse } from '../../../Interface/common';
 import { IPaginationOptions } from '../../../Interface/pagination';
@@ -72,9 +73,19 @@ const deleteStudentFromDB = async (id: string): Promise<IStudent | null> => {
 };
 
 const updateStudentToDB = async (id: string, payload: Partial<IStudent>) => {
+  const { name, guardian, localGuardian, ...studentData } = payload;
+
   const ifExits = await Student.findOne({ id });
   if (!ifExits) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Student Not Found!');
+  }
+
+  const updatedStudentData = { ...studentData };
+  if (name && Object.keys(name).length > 0) {
+    Object.keys(name).forEach(key => {
+      const nameKey = `name.${key}`;
+      (updatedStudentData as any)[nameKey] = name[key as keyof typeof name];
+    });
   }
 
   const result = await Student.findOneAndUpdate({ _id: id }, payload, {
