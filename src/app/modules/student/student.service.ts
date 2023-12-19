@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { SortOrder } from 'mongoose';
+import { SortOrder, startSession } from 'mongoose';
 import { IGenericResponse } from '../../../Interface/common';
 import { IPaginationOptions } from '../../../Interface/pagination';
 import { HelperPagination } from '../../../helpers/paginationHelpers';
@@ -8,6 +8,7 @@ import { studentSearchableFields } from './student.constants';
 import { Student } from './student.model';
 import { ApiError } from '../../../errors/ApiError';
 import httpStatus from 'http-status';
+import { User } from '../user/user.model';
 
 const getAllStudentFromDB = async (
   filters: IStudentFilters,
@@ -67,7 +68,27 @@ const getSingleStudentFromDB = async (id: string): Promise<IStudent | null> => {
 };
 
 const deleteStudentFromDB = async (id: string): Promise<IStudent | null> => {
-  const result = await Student.findByIdAndDelete(id);
+  let result = null;
+
+  const session = await startSession();
+  try {
+    await session.startTransaction();
+    const user = await User.findOneAndDelete({ id });
+    if (!user) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User Deleted failed!');
+    }
+
+    const student = await Student.findOneAndDelete({ id });
+    if (!student) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Student Deleted failed!');
+    }
+
+    result = student;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
 
   return result;
 };
