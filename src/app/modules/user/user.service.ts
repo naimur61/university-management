@@ -7,11 +7,12 @@ import { HelperPagination } from '../../../helpers/paginationHelpers';
 import { userSearchableFields } from './user.constants';
 import { IUser, IUserFilter } from './user.interface';
 import { User } from './user.model';
-import { generateStudentId } from './user.utils';
+import { generateFacultyId, generateStudentId } from './user.utils';
 import { IStudent } from '../student/student.interface';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { Student } from '../student/student.model';
 import httpStatus from 'http-status';
+import { IFaculty } from '../faculty/faculty.Interface';
 
 const createStudentToDB = async (
   student: IStudent,
@@ -39,6 +40,64 @@ const createStudentToDB = async (
     student.id = id;
 
     const newStudent = await Student.create([student], { session });
+    if (!newStudent.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Student create failed!');
+    }
+
+    // set ref with student
+    user.student = newStudent[0]._id;
+
+    const newUser = await User.create([user], { session });
+    if (!newUser.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User create failed!');
+    }
+
+    newUserAllData = newUser[0];
+
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
+
+  if (newUserAllData) {
+    newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
+      path: 'student',
+      populate: [
+        { path: 'academicSemester' },
+        { path: 'academicDepartment' },
+        { path: 'academicFaculty' },
+      ],
+    });
+  }
+
+  return newUserAllData;
+};
+
+const createFacultyToDB = async (
+  faculty: IFaculty,
+  user: IUser,
+): Promise<IUser | null> => {
+  if (!user.password) {
+    user.password = config.default_faculty_pass as string;
+  }
+  user.role = 'faculty';
+
+  let newUserAllData = null;
+
+  const session = await mongoose.startSession();
+
+  // eslint-disable-next-line no-useless-catch
+  try {
+    await session.startTransaction();
+
+    const id = await generateFacultyId();
+    user.id = id;
+    faculty.id = id;
+
+    const newStudent = await Student.create([faculty], { session });
     if (!newStudent.length) {
       throw new ApiError(httpStatus.BAD_REQUEST, 'Student create failed!');
     }
@@ -149,6 +208,7 @@ const updateUserToDB = async (id: string, payload: Partial<IUser>) => {
 
 export const UserService = {
   createStudentToDB,
+  createFacultyToDB,
   getUserFromDB,
   getSingleUserFromDB,
   deleteUserFromDB,
