@@ -21,4 +21,4 @@ router.delete('/:id', AcademicFacultyController.deleteFaculty);
 router.get('/', AcademicFacultyController.getAllFaculties);
 router.get('/:id', AcademicFacultyController.getSingleFaculty);
 
-export const FacultyRoutes = router;
+export const AcademicFacultyRoutes = router;

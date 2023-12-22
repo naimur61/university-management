@@ -13,6 +13,7 @@ import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { Student } from '../student/student.model';
 import httpStatus from 'http-status';
 import { IFaculty } from '../faculty/faculty.Interface';
+import { Faculty } from '../faculty/faculty.model';
 
 const createStudentToDB = async (
   student: IStudent,
@@ -97,13 +98,13 @@ const createFacultyToDB = async (
     user.id = id;
     faculty.id = id;
 
-    const newStudent = await Student.create([faculty], { session });
+    const newStudent = await Faculty.create([faculty], { session });
     if (!newStudent.length) {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Student create failed!');
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Faculty create failed!');
     }
 
-    // set ref with student
-    user.student = newStudent[0]._id;
+    // set ref with faculty
+    user.faculty = newStudent[0]._id;
 
     const newUser = await User.create([user], { session });
     if (!newUser.length) {
@@ -122,12 +123,8 @@ const createFacultyToDB = async (
 
   if (newUserAllData) {
     newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
-      path: 'student',
-      populate: [
-        { path: 'academicSemester' },
-        { path: 'academicDepartment' },
-        { path: 'academicFaculty' },
-      ],
+      path: 'faculty',
+      populate: [{ path: 'academicDepartment' }, { path: 'academicFaculty' }],
     });
   }
 

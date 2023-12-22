@@ -1,5 +1,6 @@
 import { Model, Types } from 'mongoose';
 import { IStudent } from '../student/student.interface';
+import { IFaculty } from '../faculty/faculty.Interface';
 export type IUserRole = 'student' | 'admin' | 'faculty';
 
 export type IUser = {
@@ -7,7 +8,7 @@ export type IUser = {
   role: IUserRole;
   password: string;
   student?: Types.ObjectId | IStudent;
-  // faculty?: Types.ObjectId | IFaculty;
+  faculty?: Types.ObjectId | IFaculty;
   // department?:Types.ObjectId | IDepartment;
 };
 

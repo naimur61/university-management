@@ -4,4 +4,4 @@ const router = express.Router();
 
 router.post('/create-faculty');
 
-export const Faculty = router;
+export const FacultyRoutes = router;
