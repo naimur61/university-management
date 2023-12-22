@@ -18,6 +18,7 @@ export type IFaculty = {
   emergencyContactNo: string;
   presentAddress: string;
   permanentAddress: string;
+  profileImage: string;
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   designation: 'Professor' | 'Lecturer';
   academicDepartment: Types.ObjectId | IAcademicDepartment;
