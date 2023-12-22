@@ -1,4 +1,4 @@
-import { Model, ObjectId, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { IAcademicFaculty } from '../academicFaculty/academicFaculty.interface';
 import { IAcademicDepartment } from '../academicDepartment/academicDepartment.interface';
 import { IAcademicSemester } from '../academicSemester/academicSemester.interface';
@@ -53,7 +53,4 @@ export type IStudentFilters = {
   email?: string;
   contactNo?: string;
   bloodGroup?: string;
-  academicFaculty?: ObjectId;
-  academicDepartment?: ObjectId;
-  academicSemester?: ObjectId;
 };
