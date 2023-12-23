@@ -34,6 +34,19 @@ const createFaculty: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
+const createAdmin: RequestHandler = catchAsync(async (req, res) => {
+  const { admin, ...userData } = req.body;
+
+  const result = await UserService.createFacultyToDB(admin, userData);
+
+  sendResponse(res, {
+    statuscode: httpStatus.OK,
+    success: true,
+    message: 'User successfully created!',
+    data: result,
+  });
+});
+
 const getUser: RequestHandler = catchAsync(async (req, res) => {
   const filters = pick(req.query, userFilterableFields);
   const paginationOptions = pick(req.query, paginationKey);
@@ -91,6 +104,7 @@ const updateUser: RequestHandler = catchAsync(async (req, res) => {
 export const UserController = {
   createStudent,
   createFaculty,
+  createAdmin,
   getUser,
   getSingleUser,
   deleteUser,
