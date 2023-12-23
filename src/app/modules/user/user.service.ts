@@ -7,13 +7,19 @@ import { HelperPagination } from '../../../helpers/paginationHelpers';
 import { userSearchableFields } from './user.constants';
 import { IUser, IUserFilter } from './user.interface';
 import { User } from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import { IStudent } from '../student/student.interface';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { Student } from '../student/student.model';
 import httpStatus from 'http-status';
 import { IFaculty } from '../faculty/faculty.Interface';
 import { Faculty } from '../faculty/faculty.model';
+import { IAdmin } from '../admin/admin.interface';
+import { Admin } from '../admin/admin.model';
 
 const createStudentToDB = async (
   student: IStudent,
@@ -131,6 +137,60 @@ const createFacultyToDB = async (
   return newUserAllData;
 };
 
+const createAdminToDB = async (
+  admin: IAdmin,
+  user: IUser,
+): Promise<IUser | null> => {
+  if (!user.password) {
+    user.password = config.default_admin_pass as string;
+  }
+  user.role = 'admin';
+
+  let newUserAllData = null;
+
+  const session = await mongoose.startSession();
+
+  // eslint-disable-next-line no-useless-catch
+  try {
+    await session.startTransaction();
+
+    const id = await generateAdminId();
+    user.id = id;
+    admin.id = id;
+
+    const newStudent = await Admin.create([admin], { session });
+    if (!newStudent.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Admin create failed!');
+    }
+
+    // set ref with Admin
+    user.admin = newStudent[0]._id;
+
+    const newUser = await User.create([user], { session });
+    if (!newUser.length) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User create failed!');
+    }
+
+    newUserAllData = newUser[0];
+
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
+
+  if (newUserAllData) {
+    newUserAllData = await User.findOne({ id: newUserAllData.id }).populate({
+      path: 'admin',
+      populate: [{ path: 'managementDepartment' }],
+    });
+  }
+
+  return newUserAllData;
+};
+
 const getUserFromDB = async (
   filters: IUserFilter,
   paginationOptions: IPaginationOptions,
@@ -206,6 +266,7 @@ const updateUserToDB = async (id: string, payload: Partial<IUser>) => {
 export const UserService = {
   createStudentToDB,
   createFacultyToDB,
+  createAdminToDB,
   getUserFromDB,
   getSingleUserFromDB,
   deleteUserFromDB,
