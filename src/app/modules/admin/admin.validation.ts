@@ -1,7 +1,7 @@
 import z from 'zod';
 import { BloodGroup, Gender } from './admin.constant';
 
-const updateFacultyZodSchema = z.object({
+const updateAdminZodSchema = z.object({
   body: z.object({
     name: z
       .object({
@@ -24,6 +24,6 @@ const updateFacultyZodSchema = z.object({
   }),
 });
 
-export const FacultyValidation = {
-  updateFacultyZodSchema,
+export const AdminValidation = {
+  updateAdminZodSchema,
 };
