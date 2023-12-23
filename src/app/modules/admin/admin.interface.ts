@@ -1,5 +1,5 @@
 import { Model, Types } from 'mongoose';
-import { IAcademicDepartment } from '../academicDepartment/academicDepartment.interface';
+import { IManagementDepartment } from '../managementDepartment/managementDepartment.interface';
 
 export type UserName = {
   firstName: string;
@@ -20,7 +20,7 @@ export type IAdmin = {
   profileImage: string;
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   designation: 'Professor' | 'Lecturer';
-  academicDepartment: Types.ObjectId | IAcademicDepartment;
+  managementDepartment: Types.ObjectId | IManagementDepartment;
 };
 
 export type AdminModel = Model<IAdmin, Record<string, unknown>>;
