@@ -20,6 +20,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
+    isNeedsChangePass: {
+      type: Boolean,
+      default: true,
+    },
     student: {
       type: Schema.Types.ObjectId,
       ref: 'Student',
