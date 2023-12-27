@@ -7,7 +7,9 @@ import bcrypt from 'bcrypt';
 const userLogin = async (payload: ILoginUser) => {
   const { id, password } = payload;
 
-  const isUserExit=await
+  // Create and instance for user
+  const user = new User();
+
   //   Check User Exist
   // const isUserExit = await User.findOne(
   //   { id },
