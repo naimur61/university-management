@@ -7,14 +7,15 @@ import bcrypt from 'bcrypt';
 const userLogin = async (payload: ILoginUser) => {
   const { id, password } = payload;
 
+  const isUserExit=await
   //   Check User Exist
-  const isUserExit = await User.findOne(
-    { id },
-    { id: 1, password: 1, isNeedsChangePass: 1 },
-  ).lean();
-  if (!isUserExit) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User dose not exit!');
-  }
+  // const isUserExit = await User.findOne(
+  //   { id },
+  //   { id: 1, password: 1, isNeedsChangePass: 1 },
+  // ).lean();
+  // if (!isUserExit) {
+  //   throw new ApiError(httpStatus.NOT_FOUND, 'User dose not exit!');
+  // }
 
   //   Check password Matched
   const isPasswordMatched = await bcrypt.compare(password, isUserExit.password);

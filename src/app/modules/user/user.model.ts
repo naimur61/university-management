@@ -1,10 +1,10 @@
 import { Schema, model } from 'mongoose';
-import { IUser, UserModel } from './user.interface';
+import { IUser, IUserMethod, UserModel } from './user.interface';
 import { UserTypes } from './user.constants';
 import bcrypt from 'bcrypt';
 import config from '../../../config';
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUser, Record<string, never>, IUserMethod>(
   {
     id: {
       type: String,
@@ -51,5 +51,14 @@ userSchema.pre('save', async function (next) {
 
   next();
 });
+
+userSchema.methods.isUserExit = async function (
+  id: string,
+): Promise<Partial<IUser> | null> {
+  return User.findOne(
+    { id },
+    { id: 1, password: 1, isNeedsChangePass: 1 },
+  ).lean();
+};
 
 export const User = model<IUser, UserModel>('User', userSchema);

@@ -14,5 +14,13 @@ export type IUser = {
   admin?: Types.ObjectId | IAdmin;
 };
 
-export type UserModel = Model<IUser, Record<string, unknown>>;
+export type IUserMethod = {
+  isUserExit(id: string): Promise<Partial<IUser> | null>;
+  isPasswordMatched(
+    givenPassword: string,
+    savedPassword: string,
+  ): Promise<boolean>;
+};
+
+export type UserModel = Model<IUser, Record<string, unknown>, IUserMethod>;
 export type IUserFilter = { searchTerm?: string };
