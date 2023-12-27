@@ -61,4 +61,11 @@ userSchema.methods.isUserExit = async function (
   ).lean();
 };
 
+userSchema.methods.isPasswordMatched = async function (
+  givenPassword: string,
+  savedPassword: string,
+): Promise<boolean> {
+  return await bcrypt.compare(givenPassword, savedPassword);
+};
+
 export const User = model<IUser, UserModel>('User', userSchema);

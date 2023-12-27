@@ -2,7 +2,6 @@ import httpStatus from 'http-status';
 import { ApiError } from '../../../errors/ApiError';
 import { User } from '../user/user.model';
 import { ILoginUser } from './auth.interface';
-import bcrypt from 'bcrypt';
 
 const userLogin = async (payload: ILoginUser) => {
   const { id, password } = payload;
@@ -10,22 +9,23 @@ const userLogin = async (payload: ILoginUser) => {
   // Create and instance for user
   const user = new User();
 
-  //   Check User Exist
-  // const isUserExit = await User.findOne(
-  //   { id },
-  //   { id: 1, password: 1, isNeedsChangePass: 1 },
-  // ).lean();
-  // if (!isUserExit) {
-  //   throw new ApiError(httpStatus.NOT_FOUND, 'User dose not exit!');
-  // }
+  // check User exit
+  const isUserExit = await user.isUserExit(id);
+
+  if (!isUserExit) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User dose not exit!');
+  }
 
   //   Check password Matched
-  const isPasswordMatched = await bcrypt.compare(password, isUserExit.password);
-
-  if (!isPasswordMatched) {
+  if (
+    isUserExit.password &&
+    (await user.isPasswordMatched(password, isUserExit.password))
+  ) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect!');
   }
-  return {};
+  return {
+    isUserExit,
+  };
 };
 
 export const AuthService = {
