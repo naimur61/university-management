@@ -2,6 +2,9 @@ import httpStatus from 'http-status';
 import { ApiError } from '../../../errors/ApiError';
 import { User } from '../user/user.model';
 import { ILoginUser } from './auth.interface';
+import { Secret } from 'jsonwebtoken';
+import config from '../../../config';
+import { jwtHelper } from '../../../helpers/jwtHelper';
 
 const userLogin = async (payload: ILoginUser) => {
   const { id, password } = payload;
@@ -23,8 +26,24 @@ const userLogin = async (payload: ILoginUser) => {
   ) {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect!');
   }
+
+  const { id: usrId, role } = isUserExit;
+  const jwt_webToken = jwtHelper.createToken(
+    { id: usrId, role: role },
+    config.jwt.secrete as Secret,
+    { expireIn: config.jwt.secrete_expire_in },
+  );
+
+  const refresh_webToken = jwtHelper.createToken(
+    { id: usrId, role: role },
+    config.jwt.refresh_secrete as Secret,
+    { expireIn: config.jwt.refresh_secrete_expire_in },
+  );
+
   return {
     isUserExit,
+    jwt_webToken,
+    refresh_webToken,
   };
 };
 

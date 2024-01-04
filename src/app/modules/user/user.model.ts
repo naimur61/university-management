@@ -57,7 +57,7 @@ userSchema.methods.isUserExit = async function (
 ): Promise<Partial<IUser> | null> {
   return User.findOne(
     { id },
-    { id: 1, password: 1, isNeedsChangePass: 1 },
+    { id: 1, password: 1, role: 1, isNeedsChangePass: 1 },
   ).lean();
 };
 
