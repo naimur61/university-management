@@ -23,4 +23,5 @@ export type IUserMethod = {
 };
 
 export type UserModel = Model<IUser, Record<string, unknown>, IUserMethod>;
+
 export type IUserFilter = { searchTerm?: string };

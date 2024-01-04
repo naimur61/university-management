@@ -39,6 +39,9 @@ const userSchema = new Schema<IUser, Record<string, never>, IUserMethod>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   },
 );
 
