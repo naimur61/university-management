@@ -27,7 +27,7 @@ const userLogin = async (payload: ILoginUser) => {
     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password is incorrect!');
   }
 
-  const { id: usrId, role } = isUserExit;
+  const { id: usrId, role, isNeedsChangePass } = isUserExit;
   const jwt_webToken = jwtHelper.createToken(
     { id: usrId, role: role },
     config.jwt.secrete as Secret,
@@ -44,6 +44,7 @@ const userLogin = async (payload: ILoginUser) => {
     isUserExit,
     jwt_webToken,
     refresh_webToken,
+    isNeedsChangePass,
   };
 };
 
