@@ -32,25 +32,15 @@ const userSchema = new Schema<IUser, Record<string, never>, IUserMethod>(
       type: Schema.Types.ObjectId,
       ref: 'Faculty',
     },
-    // admin: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: 'Admin',
-    // },
+    admin: {
+      type: Schema.Types.ObjectId,
+      ref: 'Admin',
+    },
   },
   {
     timestamps: true,
   },
 );
-
-userSchema.pre('save', async function (next) {
-  // hash Password
-  this.password = await bcrypt.hash(
-    this.password,
-    Number(config.bcrypt_salt_round),
-  );
-
-  next();
-});
 
 userSchema.methods.isUserExit = async function (
   id: string,
@@ -67,5 +57,15 @@ userSchema.methods.isPasswordMatched = async function (
 ): Promise<boolean> {
   return await bcrypt.compare(givenPassword, savedPassword);
 };
+
+userSchema.pre('save', async function (next) {
+  // hash Password
+  this.password = await bcrypt.hash(
+    this.password,
+    Number(config.bcrypt_salt_round),
+  );
+
+  next();
+});
 
 export const User = model<IUser, UserModel>('User', userSchema);

@@ -3,3 +3,9 @@ export type ILoginUser = {
   password: string;
   role: string;
 };
+
+export type IUserLoginResponse = {
+  accessToken: string;
+  refreshToken: string;
+  isNeedsChangePass: boolean;
+};
