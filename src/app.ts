@@ -13,6 +13,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/', router);
 
+app.get('/', (req: Request, res: Response) => {
+  res.status(httpStatus.NOT_FOUND).json({
+    success: true,
+    message: 'University server is online!',
+  });
+});
 app.use(globalErrorHandler);
 
 // Api Error Route Handler
