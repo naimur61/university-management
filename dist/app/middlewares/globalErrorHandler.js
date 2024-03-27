@@ -11,6 +11,7 @@ const logger_1 = require("../../shared/logger");
 const zod_1 = require("zod");
 const handleZodError_1 = __importDefault(require("../../errors/handleZodError"));
 const handleCastError_1 = __importDefault(require("../../errors/handleCastError"));
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const globalErrorHandler = (error, req, res, next) => {
     config_1.default.env === 'development'
         ? logger_1.errorLogger.error('Global Error Handler~', error.message)
@@ -66,6 +67,5 @@ const globalErrorHandler = (error, req, res, next) => {
         // eslint-disable-next-line no-undefined
         stack: config_1.default.env !== 'production' ? error === null || error === void 0 ? void 0 : error.stack : undefined,
     });
-    next();
 };
 exports.default = globalErrorHandler;

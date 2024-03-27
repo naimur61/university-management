@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateFacultyId = exports.generateStudentId = void 0;
+exports.generateAdminId = exports.generateFacultyId = exports.generateStudentId = void 0;
 const user_model_1 = require("./user.model");
 const findLastStudentID = () => __awaiter(void 0, void 0, void 0, function* () {
-    const lastStudent = yield user_model_1.User.findOne({}, { id: 1, _id: 0 })
+    const lastStudent = yield user_model_1.User.findOne({ role: 'student' }, { id: 1, _id: 0 })
         .sort({
         createdAt: -1,
     })
@@ -28,7 +28,7 @@ const generateStudentId = (academicSemester) => __awaiter(void 0, void 0, void 0
 });
 exports.generateStudentId = generateStudentId;
 const findLastFacultyID = () => __awaiter(void 0, void 0, void 0, function* () {
-    const lastFaculty = yield user_model_1.User.findOne({}, { id: 1, _id: 0 })
+    const lastFaculty = yield user_model_1.User.findOne({ role: 'faculty' }, { id: 1, _id: 0 })
         .sort({ createdAt: -1 })
         .lean();
     const newFaculty = lastFaculty ? parseInt(lastFaculty.id.slice(-5)) + 1 : 1;
@@ -41,3 +41,17 @@ const generateFacultyId = () => __awaiter(void 0, void 0, void 0, function* () {
     return incrementId;
 });
 exports.generateFacultyId = generateFacultyId;
+const findLastAdminID = () => __awaiter(void 0, void 0, void 0, function* () {
+    const lastFaculty = yield user_model_1.User.findOne({ role: 'admin' }, { id: 1, _id: 0 })
+        .sort({ createdAt: -1 })
+        .lean();
+    const newFaculty = lastFaculty ? parseInt(lastFaculty.id.slice(-5)) + 1 : 1;
+    return newFaculty;
+});
+const generateAdminId = () => __awaiter(void 0, void 0, void 0, function* () {
+    const newUser = yield findLastAdminID();
+    let incrementId = yield newUser.toString().padStart(5, '0');
+    incrementId = `A-${incrementId}`;
+    return incrementId;
+});
+exports.generateAdminId = generateAdminId;

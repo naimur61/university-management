@@ -41,6 +41,26 @@ const createStudent = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, 
         data: result,
     });
 }));
+const createFaculty = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const _b = req.body, { faculty } = _b, userData = __rest(_b, ["faculty"]);
+    const result = yield user_service_1.UserService.createFacultyToDB(faculty, userData);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'User successfully created!',
+        data: result,
+    });
+}));
+const createAdmin = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const _c = req.body, { admin } = _c, userData = __rest(_c, ["admin"]);
+    const result = yield user_service_1.UserService.createAdminToDB(admin, userData);
+    (0, sendResponse_1.default)(res, {
+        statuscode: http_status_1.default.OK,
+        success: true,
+        message: 'User successfully created!',
+        data: result,
+    });
+}));
 const getUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const filters = (0, pick_1.default)(req.query, user_constants_1.userFilterableFields);
     const paginationOptions = (0, pick_1.default)(req.query, constants_1.default);
@@ -86,6 +106,8 @@ const updateUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 exports.UserController = {
     createStudent,
+    createFaculty,
+    createAdmin,
     getUser,
     getSingleUser,
     deleteUser,

@@ -7,5 +7,5 @@ export type ILoginUser = {
 export type IUserLoginResponse = {
   accessToken: string;
   refreshToken: string;
-  isNeedsChangePass: boolean;
+  isNeedsChangePass?: boolean;
 };

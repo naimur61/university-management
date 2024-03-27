@@ -34,6 +34,8 @@ const user_utils_1 = require("./user.utils");
 const academicSemester_model_1 = require("../academicSemester/academicSemester.model");
 const student_model_1 = require("../student/student.model");
 const http_status_1 = __importDefault(require("http-status"));
+const faculty_model_1 = require("../faculty/faculty.model");
+const admin_model_1 = require("../admin/admin.model");
 const createStudentToDB = (student, user) => __awaiter(void 0, void 0, void 0, function* () {
     if (!user.password) {
         user.password = config_1.default.default_student_pass;
@@ -75,6 +77,86 @@ const createStudentToDB = (student, user) => __awaiter(void 0, void 0, void 0, f
                 { path: 'academicDepartment' },
                 { path: 'academicFaculty' },
             ],
+        });
+    }
+    return newUserAllData;
+});
+const createFacultyToDB = (faculty, user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user.password) {
+        user.password = config_1.default.default_faculty_pass;
+    }
+    user.role = 'faculty';
+    let newUserAllData = null;
+    const session = yield mongoose_1.default.startSession();
+    // eslint-disable-next-line no-useless-catch
+    try {
+        yield session.startTransaction();
+        const id = yield (0, user_utils_1.generateFacultyId)();
+        user.id = id;
+        faculty.id = id;
+        const newStudent = yield faculty_model_1.Faculty.create([faculty], { session });
+        if (!newStudent.length) {
+            throw new ApiError_1.ApiError(http_status_1.default.BAD_REQUEST, 'Faculty create failed!');
+        }
+        // set ref with faculty
+        user.faculty = newStudent[0]._id;
+        const newUser = yield user_model_1.User.create([user], { session });
+        if (!newUser.length) {
+            throw new ApiError_1.ApiError(http_status_1.default.BAD_REQUEST, 'User create failed!');
+        }
+        newUserAllData = newUser[0];
+        yield session.commitTransaction();
+        yield session.endSession();
+    }
+    catch (error) {
+        yield session.abortTransaction();
+        yield session.endSession();
+        throw error;
+    }
+    if (newUserAllData) {
+        newUserAllData = yield user_model_1.User.findOne({ id: newUserAllData.id }).populate({
+            path: 'faculty',
+            populate: [{ path: 'academicDepartment' }, { path: 'academicFaculty' }],
+        });
+    }
+    return newUserAllData;
+});
+const createAdminToDB = (admin, user) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!user.password) {
+        user.password = config_1.default.default_admin_pass;
+    }
+    user.role = 'admin';
+    let newUserAllData = null;
+    const session = yield mongoose_1.default.startSession();
+    // eslint-disable-next-line no-useless-catch
+    try {
+        yield session.startTransaction();
+        const id = yield (0, user_utils_1.generateAdminId)();
+        user.id = id;
+        admin.id = id;
+        const newStudent = yield admin_model_1.Admin.create([admin], { session });
+        if (!newStudent.length) {
+            throw new ApiError_1.ApiError(http_status_1.default.BAD_REQUEST, 'Admin create failed!');
+        }
+        // set ref with Admin
+        user.admin = newStudent[0]._id;
+        const newUser = yield user_model_1.User.create([user], { session });
+        if (!newUser.length) {
+            throw new ApiError_1.ApiError(http_status_1.default.BAD_REQUEST, 'User create failed!');
+        }
+        newUserAllData = newUser[0];
+        yield session.commitTransaction();
+        yield session.endSession();
+    }
+    catch (error) {
+        yield session.abortTransaction();
+        yield session.endSession();
+        throw error;
+    }
+    if (newUserAllData) {
+        newUserAllData = yield user_model_1.User.findOne({ id: newUserAllData.id }).populate({
+            path: 'admin',
+            populate: [{ path: 'managementDepartment' }],
         });
     }
     return newUserAllData;
@@ -135,6 +217,8 @@ const updateUserToDB = (id, payload) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.UserService = {
     createStudentToDB,
+    createFacultyToDB,
+    createAdminToDB,
     getUserFromDB,
     getSingleUserFromDB,
     deleteUserFromDB,
